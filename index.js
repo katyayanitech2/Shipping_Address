@@ -25,7 +25,7 @@ app.post('/woocommerce/update-shipping', async (req, res) => {
     
     try {
         if (!shippingData.shipping || shippingData.shipping.first_name == '') {
-            const data =[ {
+            const data = {
                 shipping: {
                     "first_name": shippingData.billing.first_name,
                     "last_name": shippingData.billing.last_name,
@@ -39,7 +39,7 @@ app.post('/woocommerce/update-shipping', async (req, res) => {
                     "email": shippingData.billing.email,
                     "phone": shippingData.billing.phone
                 }
-            }];
+            };
             await updateOrder(shippingData.id, data);
         }
         res.status(200).send("Shipping addresses updated successfully");
