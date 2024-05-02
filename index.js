@@ -5,21 +5,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const credentials_ck = "ck_805aa422ac6ff77ff28160eff9ec54ac63199bff";
 const credentials_cs = "cs_76a31e8260f03595f3800dfa1c80249a477a6c3b";
-const getOrders = async () => {
-    try {
-        const encodedCredentials = Buffer.from(`${credentials_ck}:${credentials_cs}`).toString('base64');
-        const response = await axios.get('https://katyayaniorganics.com/wp-json/wc/v1/orders', {
-            headers: {
-                'Authorization': `Basic ${encodedCredentials}`
-            }
-        });
-        const ordersResponse = response.data;
-        return ordersResponse;
-    } catch (error) {
-        console.error("Error:", error);
-        return null;
-    }
-};
 const updateOrder = async (orderId, updatedOrder) => {
     try {
         const encodedCredentials = Buffer.from(`${credentials_ck}:${credentials_cs}`).toString('base64');
@@ -32,44 +17,36 @@ const updateOrder = async (orderId, updatedOrder) => {
         console.error("Error updating order:", error);
     }
 };
-// Define shippingAddress middleware if needed
+
 app.post('/woocommerce/update-shipping', async (req, res) => {
     const shippingData = req.body;
     console.log(shippingData);
-    // const data = {
-    //     shipping: {
-    //         "first_name": shippingData.billing.first_name,
-    //         "last_name": shippingData.billing.last_name,
-    //         "company": shippingData.billing.company,
-    //         "address_1": shippingData.billing.address_1,
-    //         "address_2": shippingData.billing.address_2,
-    //         "city": shippingData.billing.city,
-    //         "state": shippingData.billing.state,
-    //         "postcode": shippingData.billing.postcode,
-    //         "country": shippingData.billing.country,
-    //         "email": shippingData.billing.email,
-    //         "phone": shippingData.billing.phone
-    //     }
-    // };
-    // updateOrder(shippingData.orderId, data);
-    // try {
-    //     const ordersResponse = await getOrders();
-    //     if (!ordersResponse) {
-    //         res.status(500).send("Failed to fetch orders");
-    //         return;
-    //     }
-    //     for (const order of ordersResponse) {
-    //         if (!order.shipping) {
-    //             order.shipping = order.billing;
-    //             await updateOrder(order.id, order);
-    //         }
-    //     }
-    //     res.status(200).send("Shipping addresses updated successfully");
-    // } catch (error) {
-    //     console.error("Error:", error);
-    //     res.status(500).send("Internal server error");
-    // }
+    const data = {
+        shipping: {
+            "first_name": shippingData.billing.first_name,
+            "last_name": shippingData.billing.last_name,
+            "company": shippingData.billing.company,
+            "address_1": shippingData.billing.address_1,
+            "address_2": shippingData.billing.address_2,
+            "city": shippingData.billing.city,
+            "state": shippingData.billing.state,
+            "postcode": shippingData.billing.postcode,
+            "country": shippingData.billing.country,
+            "email": shippingData.billing.email,
+            "phone": shippingData.billing.phone
+        }
+    };
+    try {
+        if(shippingData.shipping.first_name == ''){
+            await updateOrder(shippingData.id,data);
+        }
+        res.status(200).send("Shipping addresses updated successfully");
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal server error");
+    }
 });
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
