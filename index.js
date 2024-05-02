@@ -24,6 +24,7 @@ app.post('/woocommerce/update-shipping', async (req, res) => {
     console.log(shippingData);
     console.log(shippingData.billing.first_name);
     
+    const billing = shippingData.billing;
     try {
         if (!shippingData.shipping) {
             const data = {
