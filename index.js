@@ -21,24 +21,26 @@ const updateOrder = async (orderId, updatedOrder) => {
 app.post('/woocommerce/update-shipping', async (req, res) => {
     const shippingData = req.body;
     console.log(shippingData);
-    const data = {
-        shipping: {
-            "first_name": shippingData.billing.first_name,
-            "last_name": shippingData.billing.last_name,
-            "company": shippingData.billing.company,
-            "address_1": shippingData.billing.address_1,
-            "address_2": shippingData.billing.address_2,
-            "city": shippingData.billing.city,
-            "state": shippingData.billing.state,
-            "postcode": shippingData.billing.postcode,
-            "country": shippingData.billing.country,
-            "email": shippingData.billing.email,
-            "phone": shippingData.billing.phone
-        }
-    };
+    console.log(shippingData.billing.first_name);
+    
     try {
-        if(shippingData.shipping.first_name == ''){
-            await updateOrder(shippingData.id,data);
+        if (!shippingData.shipping || shippingData.shipping.first_name == '') {
+            const data =[ {
+                shipping: {
+                    "first_name": shippingData.billing.first_name,
+                    "last_name": shippingData.billing.last_name,
+                    "company": shippingData.billing.company,
+                    "address_1": shippingData.billing.address_1,
+                    "address_2": shippingData.billing.address_2,
+                    "city": shippingData.billing.city,
+                    "state": shippingData.billing.state,
+                    "postcode": shippingData.billing.postcode,
+                    "country": shippingData.billing.country,
+                    "email": shippingData.billing.email,
+                    "phone": shippingData.billing.phone
+                }
+            }];
+            await updateOrder(shippingData.id, data);
         }
         res.status(200).send("Shipping addresses updated successfully");
     } catch (error) {
