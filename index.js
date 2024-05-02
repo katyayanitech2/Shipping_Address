@@ -1,9 +1,10 @@
 const express = require('express');
+const axios = require('axios');
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const axios = require('axios');
 
 const credentials_ck = "ck_805aa422ac6ff77ff28160eff9ec54ac63199bff";
 const credentials_cs = "cs_76a31e8260f03595f3800dfa1c80249a477a6c3b";
@@ -23,11 +24,6 @@ const getOrders = async () => {
     }
 };
 
-// const data = {
-//     shipping: {
-//         first_name, last_name, company, address_1, address_2, city, state, postcode, country, email, phone
-//     }
-// }
 const updateOrder = async (orderId, updatedOrder) => {
     try {
         const encodedCredentials = Buffer.from(`${credentials_ck}:${credentials_cs}`).toString('base64');
@@ -42,9 +38,19 @@ const updateOrder = async (orderId, updatedOrder) => {
     }
 };
 
-app.post('/update-shipping', async (req, res) => {
+app.use('/woocommerce',shippingAddress);
+
+
+shippingAddress.post('/update-shipping', async (req, res) => {
     const shippingData = req.body;
     console.log(shippingData);
+    // const data = [{
+    //         shipping: {
+    //             "first_name":shippingData.billing.first_name, "last_name":shippingData.billing.last_name, "company", address_1, address_2, city, state, postcode, country, email, phone
+    //         }
+    //     }]
+
+    // updateOrder(shippingData.orderId,data)
     // try {
     //     const ordersResponse = await getOrders();
 
