@@ -22,11 +22,10 @@ const updateOrder = async (orderId, updatedOrder) => {
 app.post('/woocommerce/update-shipping', async (req, res) => {
     const shippingData = req.body;
     console.log(shippingData);
-    console.log(shippingData.billing.first_name);
-    
-    const billing = shippingData.billing;
+    console.log("Billing data",shippingData.billing.first_name);
+    console.log("Shipping data",shippingData.shipping.first_name);
     try {
-        if (!shippingData.shipping) {
+        if (shippingData.shipping.first_name == '') {
             const data = {
                 shipping: {
                     "first_name": shippingData.billing.first_name,
@@ -35,13 +34,14 @@ app.post('/woocommerce/update-shipping', async (req, res) => {
                     "address_1": shippingData.billing.address_1,
                     "address_2": shippingData.billing.address_2,
                     "city": shippingData.billing.city,
-                    "state": shippingData.billing.state.name,
+                    "state": shippingData.billing.state,
                     "postcode": shippingData.billing.postcode,
                     "country": shippingData.billing.country,
                     "email": shippingData.billing.email,
                     "phone": shippingData.billing.phone
                 }
             };
+            console.log("Shipping data demo : ",data);
             await updateOrder(shippingData.id, data);
         }
         res.status(200).send("Shipping addresses updated successfully");
