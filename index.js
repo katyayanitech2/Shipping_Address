@@ -5,6 +5,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const credentials_ck = "ck_805aa422ac6ff77ff28160eff9ec54ac63199bff";
 const credentials_cs = "cs_76a31e8260f03595f3800dfa1c80249a477a6c3b";
+
 const updateOrder = async (orderId, updatedOrder) => {
     try {
         const encodedCredentials = Buffer.from(`${credentials_ck}:${credentials_cs}`).toString('base64');
@@ -24,7 +25,7 @@ app.post('/woocommerce/update-shipping', async (req, res) => {
     console.log(shippingData.billing.first_name);
     
     try {
-        if (!shippingData.shipping || shippingData.shipping.first_name == '') {
+        if (!shippingData.shipping) {
             const data = {
                 shipping: {
                     "first_name": shippingData.billing.first_name,
@@ -33,7 +34,7 @@ app.post('/woocommerce/update-shipping', async (req, res) => {
                     "address_1": shippingData.billing.address_1,
                     "address_2": shippingData.billing.address_2,
                     "city": shippingData.billing.city,
-                    "state": shippingData.billing.state,
+                    "state": shippingData.billing.state.name,
                     "postcode": shippingData.billing.postcode,
                     "country": shippingData.billing.country,
                     "email": shippingData.billing.email,
