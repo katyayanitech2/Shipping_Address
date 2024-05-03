@@ -59,6 +59,8 @@ app.post('/woocommerce/update-shipping', async (req, res) => {
     }
 });
 
+
+// For unique task 
 async function fetchAccessToken() {
     const accessTokenUrl = process.env.ACCESS_TOKEN_URL;
 
